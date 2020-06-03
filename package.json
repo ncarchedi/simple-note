@@ -12,6 +12,7 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.55",
+    "autosuggest-highlight": "^3.1.1",
     "clsx": "latest",
     "moment": "^2.26.0",
     "react": "latest",

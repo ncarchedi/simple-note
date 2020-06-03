@@ -2,10 +2,12 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
+import parse from "autosuggest-highlight/parse";
+import match from "autosuggest-highlight/match";
 
 const useStyles = makeStyles((theme) => ({
   input: {
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(2),
   },
 }));
 
@@ -23,10 +25,32 @@ export default function TagsInput(props) {
         setInputValue(newInputValue);
       }}
       multiple
-      options={props.options}
+      autoHighlight
+      options={props.options.sort()}
       renderInput={(params) => (
-        <TextField {...params} placeholder="Add some tags..." />
+        <TextField
+          {...params}
+          placeholder={props.value.length ? null : "Add some tags..."}
+        />
       )}
+      renderOption={(option, { inputValue }) => {
+        const matches = match(option, inputValue);
+        const parts = parse(option, matches);
+
+        return (
+          <div>
+            {parts.map((part, index) => (
+              <span
+                key={index}
+                style={{ fontWeight: part.highlight ? 700 : 400 }}
+              >
+                {part.text}
+              </span>
+            ))}
+          </div>
+        );
+      }}
+      ChipProps={{ variant: "outlined", color: "primary", size: "small" }}
     />
   );
 }

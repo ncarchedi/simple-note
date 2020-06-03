@@ -12,6 +12,7 @@ import NoteInput from "./NoteInput";
 import TagsInput from "./TagsInput";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
+import { dummyNotes, dummyTags } from "./dummyData";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -35,53 +36,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App() {
   const classes = useStyles();
-  const dummyNotes = [
-    {
-      id: uuidv4(),
-      timestamp: moment().subtract(25, "minutes"),
-      text: "Get groceries",
-      tags: ["todo"],
-    },
-    {
-      id: uuidv4(),
-      timestamp: moment().subtract(10, "minutes"),
-      text: "Go to the gym later",
-      tags: ["todo", "fitness", "2020 goals"],
-    },
-    {
-      id: uuidv4(),
-      timestamp: moment().subtract(4, "minutes"),
-      text: "Mitch is the trainer from Colorado",
-      tags: ["people"],
-    },
-    {
-      id: uuidv4(),
-      timestamp: moment().subtract(3, "minutes"),
-      text:
-        "Ideas for next project: an edible rocket, a website that doesn't load, a note-taking app for babies",
-      tags: ["2020 goals", "note to self", "reminder", "work", "ideas"],
-    },
-    {
-      id: uuidv4(),
-      timestamp: moment(),
-      text: "Quarterly reviews are next week",
-      tags: ["work", "reminder"],
-    },
-  ];
-  const dummyTags = [
-    "todo",
-    "fitness",
-    "2020 goals",
-    "people",
-    "work",
-    "reminder",
-    "note to self",
-    "ideas",
-  ];
+
   const [notes, setNotes] = useState(dummyNotes);
   const [tags, setTags] = useState(dummyTags);
   // const [notes, setNotes] = useState([]);
   // const [tags, setTags] = useState([]);
+
   const [noteInputValue, setNoteInputValue] = useState("");
   const [tagsInputValue, setTagsInputValue] = useState([]);
   const noteInputRef = useRef(null);
@@ -163,17 +123,27 @@ export default function App() {
                   />
                 </Grid>
                 <Grid className={classes.tagsContainer} item xs={12} sm={6}>
-                  {n.tags.map((t) => (
-                    <Chip
-                      className={classes.tag}
-                      key={t}
-                      label={t}
-                      variant="outlined"
-                      color="primary"
-                      size="small"
-                      onDelete={() => handleRemoveTag(n.id, t)}
-                    />
-                  ))}
+                  {n.tags.length ? (
+                    n.tags.map((t) => (
+                      <Chip
+                        className={classes.tag}
+                        key={t}
+                        label={t}
+                        variant="outlined"
+                        color="primary"
+                        size="small"
+                        onDelete={() => handleRemoveTag(n.id, t)}
+                      />
+                    ))
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      style={{ fontStyle: "italic" }}
+                    >
+                      No tags
+                    </Typography>
+                  )}
                 </Grid>
               </Grid>
             </ListItem>

@@ -46,12 +46,14 @@ export default function App() {
   const [tagsInputValue, setTagsInputValue] = useState([]);
   const noteInputRef = useRef(null);
 
-  const addNote = (text, tags) => {
-    setNotes([{ id: uuidv4(), timestamp: moment(), text, tags }, ...notes]);
+  const addNote = (text, tagIds) => {
+    setNotes([{ id: uuidv4(), timestamp: moment(), text, tagIds }, ...notes]);
   };
 
-  const addTag = (newTag) => {
+  const createTag = (label) => {
+    const newTag = { id: uuidv4(), label };
     setTags([newTag, ...tags]);
+    return newTag;
   };
 
   const handleRemoveTag = (noteId, tagId) => {
@@ -63,7 +65,8 @@ export default function App() {
 
   const handleSaveNote = (e) => {
     e.preventDefault();
-    addNote(noteInputValue, tagsInputValue);
+    const tagIds = tagsInputValue.map((t) => t.id);
+    addNote(noteInputValue, tagIds);
     setNoteInputValue("");
     setTagsInputValue([]);
     noteInputRef.current.focus();
@@ -74,9 +77,13 @@ export default function App() {
   };
 
   const handleChangeTags = (e, allTags) => {
-    const newTag = allTags[allTags.length - 1];
+    const otherTags = allTags.slice(0, -1);
+    let newTag = allTags.slice(-1)[0];
     // add new tag if it doesn't already exist
-    if (!tags.includes(newTag)) addTag(newTag);
+    if (typeof newTag === "string") {
+      newTag = createTag(newTag);
+      allTags = [...otherTags, newTag];
+    }
     setTagsInputValue(allTags);
   };
 

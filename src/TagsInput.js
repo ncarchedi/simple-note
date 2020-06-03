@@ -28,24 +28,25 @@ export default function TagsInput(props) {
       autoHighlight
       filterSelectedOptions
       freeSolo
-      options={props.options.sort()}
-      renderOption={(option, { inputValue }) => {
-        const matches = match(option, inputValue);
-        const parts = parse(option, matches);
+      options={props.options}
+      getOptionLabel={(option) => option.label}
+      // renderOption={(option, { inputValue }) => {
+      //   const matches = match(option, inputValue);
+      //   const parts = parse(option, matches);
 
-        return (
-          <div>
-            {parts.map((part, index) => (
-              <span
-                key={index}
-                style={{ fontWeight: part.highlight ? 700 : 400 }}
-              >
-                {part.text}
-              </span>
-            ))}
-          </div>
-        );
-      }}
+      //   return (
+      //     <div>
+      //       {parts.map((part, index) => (
+      //         <span
+      //           key={index}
+      //           style={{ fontWeight: part.highlight ? 700 : 400 }}
+      //         >
+      //           {part.text}
+      //         </span>
+      //       ))}
+      //     </div>
+      //   );
+      // }}
       ChipProps={{ variant: "outlined", color: "primary", size: "small" }}
       renderInput={(params) => (
         <TextField

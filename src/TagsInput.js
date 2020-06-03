@@ -26,6 +26,7 @@ export default function TagsInput(props) {
       }}
       multiple
       autoHighlight
+      filterSelectedOptions
       options={props.options.sort()}
       renderInput={(params) => (
         <TextField

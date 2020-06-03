@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
@@ -12,7 +12,7 @@ import NoteInput from "./NoteInput";
 import TagsInput from "./TagsInput";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
-import { dummyNotes, dummyTags } from "./dummyData";
+// import { dummyNotes, dummyTags } from "./dummyData";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -37,14 +37,34 @@ const useStyles = makeStyles((theme) => ({
 export default function App() {
   const classes = useStyles();
 
-  const [notes, setNotes] = useState(dummyNotes);
-  const [tags, setTags] = useState(dummyTags);
-  // const [notes, setNotes] = useState([]);
-  // const [tags, setTags] = useState([]);
+  // get data from local storage, if it exists --------------
+  const storedNotes = () => {
+    const x = JSON.parse(window.localStorage.getItem("notes"));
+    if (x)
+      return x.map((n) => ({
+        ...n,
+        timestamp: moment(n.timestamp),
+      }));
+    return [];
+  };
+  const storedTags = () => {
+    const x = JSON.parse(window.localStorage.getItem("tags"));
+    return x || [];
+  };
+  // --------------------------------------------------------
+
+  const [notes, setNotes] = useState(storedNotes);
+  const [tags, setTags] = useState(storedTags);
 
   const [noteInputValue, setNoteInputValue] = useState("");
   const [tagsInputValue, setTagsInputValue] = useState([]);
   const noteInputRef = useRef(null);
+
+  // update local storage when notes or tags change
+  useEffect(() => {
+    window.localStorage.setItem("notes", JSON.stringify(notes));
+    window.localStorage.setItem("tags", JSON.stringify(tags));
+  }, [notes, tags]);
 
   const addNote = (text, tagIds) => {
     setNotes([{ id: uuidv4(), timestamp: moment(), text, tagIds }, ...notes]);

@@ -1,6 +1,8 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import Autocomplete, {
+  createFilterOptions,
+} from "@material-ui/lab/Autocomplete";
 import TextField from "@material-ui/core/TextField";
 import parse from "autosuggest-highlight/parse";
 import match from "autosuggest-highlight/match";
@@ -10,6 +12,8 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
 }));
+
+const filter = createFilterOptions();
 
 export default function TagsInput(props) {
   const classes = useStyles();
@@ -28,6 +32,18 @@ export default function TagsInput(props) {
       autoHighlight
       filterSelectedOptions
       freeSolo
+      filterOptions={(options, params) => {
+        const filtered = filter(options, params);
+        // Suggest the creation of a new value per...
+        // https://material-ui.com/components/autocomplete/#creatable
+        if (!filtered.length) {
+          filtered.push({
+            inputValue: params.inputValue,
+            label: `Add "${params.inputValue}"`,
+          });
+        }
+        return filtered;
+      }}
       options={props.options}
       getOptionLabel={(option) => option.label}
       renderOption={(option, { inputValue }) => {

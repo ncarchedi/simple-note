@@ -80,8 +80,8 @@ export default function App() {
     const otherTags = allTags.slice(0, -1);
     let newTag = allTags.slice(-1)[0];
     // add new tag if it doesn't already exist
-    if (typeof newTag === "string") {
-      newTag = createTag(newTag);
+    if (newTag.inputValue) {
+      newTag = createTag(newTag.inputValue);
       allTags = [...otherTags, newTag];
     }
     setTagsInputValue(allTags);

@@ -54,11 +54,11 @@ export default function App() {
     setTags([newTag, ...tags]);
   };
 
-  const handleRemoveTag = (id, tag) => {
-    const otherNotes = notes.filter((n) => n.id !== id);
-    const selectedNote = notes.filter((n) => n.id === id)[0];
-    const newTags = selectedNote.tags.filter((t) => t !== tag);
-    setNotes([...otherNotes, { ...selectedNote, tags: newTags }]);
+  const handleRemoveTag = (noteId, tagId) => {
+    const otherNotes = notes.filter((n) => n.id !== noteId);
+    const selectedNote = notes.filter((n) => n.id === noteId)[0];
+    const newTagIds = selectedNote.tagIds.filter((id) => id !== tagId);
+    setNotes([...otherNotes, { ...selectedNote, tagIds: newTagIds }]);
   };
 
   const handleSaveNote = (e) => {
@@ -113,26 +113,28 @@ export default function App() {
       <List>
         {notes
           .sort((a, b) => b.timestamp - a.timestamp)
-          .map((n) => (
-            <ListItem key={n.id} disableGutters divider>
+          .map((note) => (
+            <ListItem key={note.id} disableGutters divider>
               <Grid container alignItems="center">
                 <Grid item xs={12} sm={6}>
                   <ListItemText
-                    primary={n.text}
-                    secondary={n.timestamp.format("LLL")}
+                    primary={note.text}
+                    secondary={note.timestamp.format("LLL")}
                   />
                 </Grid>
                 <Grid className={classes.tagsContainer} item xs={12} sm={6}>
-                  {n.tags.length ? (
-                    n.tags.map((t) => (
+                  {note.tagIds.length ? (
+                    note.tagIds.map((tagId) => (
                       <Chip
                         className={classes.tag}
-                        key={t}
-                        label={t}
+                        key={tagId}
+                        label={tags
+                          .filter((t) => t.id === tagId)
+                          .map((t) => t.label)}
                         variant="outlined"
                         color="primary"
                         size="small"
-                        onDelete={() => handleRemoveTag(n.id, t)}
+                        onDelete={() => handleRemoveTag(note.id, tagId)}
                       />
                     ))
                   ) : (

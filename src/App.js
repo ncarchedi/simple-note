@@ -7,30 +7,54 @@ import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import Chip from "@material-ui/core/Chip";
 import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(3),
+  },
+  logo: {
+    fontFamily: ["Pacifico", "cursive"],
   },
   form: {
-    margin: theme.spacing(3, 0),
+    margin: theme.spacing(5, 0, 3, 0),
   },
   input: {
     marginBottom: theme.spacing(2),
   },
+  tag: {
+    margin: theme.spacing(0, 0, 0, 0.5),
+  },
 }));
 
 export default function App() {
-  // const dummyData = [
-  //   { timestamp: moment().add(25, "minutes"), text: "This is a test" },
-  //   { timestamp: moment().add(10, "minutes"), text: "This is another test" },
-  //   { timestamp: moment(), text: "This is one more test" },
-  // ];
-  // const [notes, setNotes] = useState(dummyData);
-
   const classes = useStyles();
-  const [notes, setNotes] = useState([]);
+
+  const dummyData = [
+    {
+      timestamp: moment().add(25, "minutes"),
+      text: "Get groceries",
+      tags: ["todo"],
+    },
+    {
+      timestamp: moment().add(10, "minutes"),
+      text: "Go to the gym later",
+      tags: ["todo", "fitness", "2020 goals"],
+    },
+    {
+      timestamp: moment().add(4, "minutes"),
+      text: "Mitch is the trainer from Colorado",
+      tags: ["people"],
+    },
+    {
+      timestamp: moment(),
+      text: "Quarterly reviews are next week",
+      tags: ["work", "reminder"],
+    },
+  ];
+  const [notes, setNotes] = useState(dummyData);
+  // const [notes, setNotes] = useState([]);
   const [input, setInput] = useState("");
 
   const addNote = (newNote) => {
@@ -49,8 +73,13 @@ export default function App() {
 
   return (
     <Container className={classes.container} maxWidth="sm">
-      <Typography variant="h5" component="h1" color="primary">
-        Simple Note
+      <Typography
+        className={classes.logo}
+        variant="h4"
+        component="h1"
+        color="primary"
+      >
+        SimpleNote
       </Typography>
       <form className={classes.form} onSubmit={handleSaveNote}>
         <TextField
@@ -60,17 +89,33 @@ export default function App() {
           fullWidth
           placeholder="Write something here..."
         />
-        <Button type="submit" variant="contained" color="primary">
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={!input}
+        >
           Save
         </Button>
       </form>
       <List>
         {notes.map((n) => (
-          <ListItem key={n.timestamp.format("LLL")} disableGutters>
+          <ListItem key={n.timestamp.format("x")} disableGutters>
             <ListItemText
               primary={n.text}
               secondary={n.timestamp.format("LLL")}
             />
+            {n.tags.map((t) => (
+              <Chip
+                className={classes.tag}
+                key={t}
+                label={t}
+                variant="outlined"
+                color="primary"
+                size="small"
+                onDelete={() => console.log(`deleted ${t} from ${n.text}`)}
+              />
+            ))}
           </ListItem>
         ))}
       </List>

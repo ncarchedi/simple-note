@@ -9,6 +9,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Chip from "@material-ui/core/Chip";
 import moment from "moment";
+import { v4 as uuidv4 } from "uuid";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -33,21 +34,25 @@ export default function App() {
 
   const dummyData = [
     {
+      id: uuidv4(),
       timestamp: moment().add(25, "minutes"),
       text: "Get groceries",
       tags: ["todo"],
     },
     {
+      id: uuidv4(),
       timestamp: moment().add(10, "minutes"),
       text: "Go to the gym later",
       tags: ["todo", "fitness", "2020 goals"],
     },
     {
+      id: uuidv4(),
       timestamp: moment().add(4, "minutes"),
       text: "Mitch is the trainer from Colorado",
       tags: ["people"],
     },
     {
+      id: uuidv4(),
       timestamp: moment(),
       text: "Quarterly reviews are next week",
       tags: ["work", "reminder"],
@@ -57,14 +62,22 @@ export default function App() {
   // const [notes, setNotes] = useState([]);
   const [input, setInput] = useState("");
 
-  const addNote = (newNote) => {
-    setNotes([{ timestamp: moment(), text: newNote }, ...notes]);
+  const addNote = (text, tags) => {
+    setNotes([{ id: uuidv4(), timestamp: moment(), text, tags }, ...notes]);
+  };
+
+  const handleRemoveTag = (id, tag) => {
+    const otherNotes = notes.filter((n) => n.id !== id);
+    const selectedNote = notes.filter((n) => n.id === id)[0];
+    const newTags = selectedNote.tags.filter((t) => t !== tag);
+    setNotes([...otherNotes, { ...selectedNote, tags: newTags }]);
   };
 
   const handleSaveNote = (e) => {
     e.preventDefault();
     setInput("");
-    addNote(input);
+    // TODO: account for tags
+    addNote(input, []);
   };
 
   const handleChangeNote = (e) => {
@@ -99,25 +112,27 @@ export default function App() {
         </Button>
       </form>
       <List>
-        {notes.map((n) => (
-          <ListItem key={n.timestamp.format("x")} disableGutters>
-            <ListItemText
-              primary={n.text}
-              secondary={n.timestamp.format("LLL")}
-            />
-            {n.tags.map((t) => (
-              <Chip
-                className={classes.tag}
-                key={t}
-                label={t}
-                variant="outlined"
-                color="primary"
-                size="small"
-                onDelete={() => console.log(`deleted ${t} from ${n.text}`)}
+        {notes
+          .sort((a, b) => b.timestamp - a.timestamp)
+          .map((n) => (
+            <ListItem key={n.id} disableGutters divider>
+              <ListItemText
+                primary={n.text}
+                secondary={n.timestamp.format("LLL")}
               />
-            ))}
-          </ListItem>
-        ))}
+              {n.tags.map((t) => (
+                <Chip
+                  className={classes.tag}
+                  key={t}
+                  label={t}
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  onDelete={() => handleRemoveTag(n.id, t)}
+                />
+              ))}
+            </ListItem>
+          ))}
       </List>
     </Container>
   );

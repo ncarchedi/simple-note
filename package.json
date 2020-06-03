@@ -15,7 +15,8 @@
     "moment": "^2.26.0",
     "react": "latest",
     "react-dom": "latest",
-    "react-scripts": "latest"
+    "react-scripts": "latest",
+    "uuid": "^8.1.0"
   },
   "browserslist": {
     "production": [

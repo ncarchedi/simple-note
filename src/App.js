@@ -74,6 +74,10 @@ export default function App() {
     setNotes([{ id: uuidv4(), timestamp: moment(), text, tags }, ...notes]);
   };
 
+  const addTag = (newTag) => {
+    setTags([newTag, ...tags]);
+  };
+
   const handleRemoveTag = (id, tag) => {
     const otherNotes = notes.filter((n) => n.id !== id);
     const selectedNote = notes.filter((n) => n.id === id)[0];
@@ -83,17 +87,20 @@ export default function App() {
 
   const handleSaveNote = (e) => {
     e.preventDefault();
+    addNote(noteInputValue, tagsInputValue);
     setNoteInputValue("");
     setTagsInputValue([]);
-    addNote(noteInputValue, tagsInputValue);
   };
 
   const handleChangeNote = (e) => {
     setNoteInputValue(e.target.value);
   };
 
-  const handleChangeTags = (e, newValue) => {
-    setTagsInputValue(newValue);
+  const handleChangeTags = (e, allTags) => {
+    const newTag = allTags[allTags.length - 1];
+    // add new tag if it doesn't already exist
+    if (!tags.includes(newTag)) addTag(newTag);
+    setTagsInputValue(allTags);
   };
 
   return (

@@ -27,6 +27,7 @@ export default function TagsInput(props) {
       multiple
       autoHighlight
       filterSelectedOptions
+      freeSolo
       options={props.options.sort()}
       renderInput={(params) => (
         <TextField

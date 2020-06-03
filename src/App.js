@@ -1,17 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Chip from "@material-ui/core/Chip";
-import NoteInput from "./NoteInput";
-import TagsInput from "./TagsInput";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
+import NoteForm from "./NoteForm";
+import NoteList from "./NoteList";
 // import { dummyNotes, dummyTags } from "./dummyData";
 
 const useStyles = makeStyles((theme) => ({
@@ -20,17 +14,6 @@ const useStyles = makeStyles((theme) => ({
   },
   logo: {
     fontFamily: ["Pacifico", "cursive"],
-  },
-  form: {
-    margin: theme.spacing(5, 0, 3, 0),
-  },
-  tag: {
-    margin: theme.spacing(0.25),
-  },
-  tagsContainer: {
-    [theme.breakpoints.up("sm")]: {
-      textAlign: "right",
-    },
   },
 }));
 
@@ -117,67 +100,16 @@ export default function App() {
       >
         SimpleNote
       </Typography>
-      <form className={classes.form} onSubmit={handleSaveNote}>
-        <NoteInput
-          ref={noteInputRef}
-          value={noteInputValue}
-          onChange={handleChangeNote}
-        />
-        <TagsInput
-          value={tagsInputValue}
-          onChange={handleChangeTags}
-          options={tags}
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={!noteInputValue}
-        >
-          Save
-        </Button>
-      </form>
-      <List>
-        {notes
-          .sort((a, b) => b.timestamp - a.timestamp)
-          .map((note) => (
-            <ListItem key={note.id} disableGutters divider>
-              <Grid container alignItems="center">
-                <Grid item xs={12} sm={6}>
-                  <ListItemText
-                    primary={note.text}
-                    secondary={note.timestamp.format("LLL")}
-                  />
-                </Grid>
-                <Grid className={classes.tagsContainer} item xs={12} sm={6}>
-                  {note.tagIds.length ? (
-                    note.tagIds.map((tagId) => (
-                      <Chip
-                        className={classes.tag}
-                        key={tagId}
-                        label={tags
-                          .filter((t) => t.id === tagId)
-                          .map((t) => t.label)}
-                        variant="outlined"
-                        color="primary"
-                        size="small"
-                        onDelete={() => handleRemoveTag(note.id, tagId)}
-                      />
-                    ))
-                  ) : (
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      style={{ fontStyle: "italic" }}
-                    >
-                      No tags
-                    </Typography>
-                  )}
-                </Grid>
-              </Grid>
-            </ListItem>
-          ))}
-      </List>
+      <NoteForm
+        tags={tags}
+        noteInputValue={noteInputValue}
+        tagsInputValue={tagsInputValue}
+        onChangeNote={handleChangeNote}
+        onSaveNote={handleSaveNote}
+        onChangeTags={handleChangeTags}
+        noteInputRef={noteInputRef}
+      />
+      <NoteList notes={notes} tags={tags} onRemoveTag={handleRemoveTag} />
     </Container>
   );
 }

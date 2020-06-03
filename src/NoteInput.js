@@ -18,6 +18,7 @@ const NoteInput = React.forwardRef((props, ref) => {
       value={props.value}
       onChange={props.onChange}
       fullWidth
+      autoFocus
       placeholder="Write your note..."
     />
   );

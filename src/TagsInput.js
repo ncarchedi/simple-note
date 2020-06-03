@@ -30,23 +30,22 @@ export default function TagsInput(props) {
       freeSolo
       options={props.options}
       getOptionLabel={(option) => option.label}
-      // renderOption={(option, { inputValue }) => {
-      //   const matches = match(option, inputValue);
-      //   const parts = parse(option, matches);
-
-      //   return (
-      //     <div>
-      //       {parts.map((part, index) => (
-      //         <span
-      //           key={index}
-      //           style={{ fontWeight: part.highlight ? 700 : 400 }}
-      //         >
-      //           {part.text}
-      //         </span>
-      //       ))}
-      //     </div>
-      //   );
-      // }}
+      renderOption={(option, { inputValue }) => {
+        const matches = match(option.label, inputValue);
+        const parts = parse(option.label, matches);
+        return (
+          <div>
+            {parts.map((part, index) => (
+              <span
+                key={index}
+                style={{ fontWeight: part.highlight ? 700 : 400 }}
+              >
+                {part.text}
+              </span>
+            ))}
+          </div>
+        );
+      }}
       ChipProps={{ variant: "outlined", color: "primary", size: "small" }}
       renderInput={(params) => (
         <TextField

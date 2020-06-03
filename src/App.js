@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
@@ -69,6 +69,7 @@ export default function App() {
   // const [tags, setTags] = useState([]);
   const [noteInputValue, setNoteInputValue] = useState("");
   const [tagsInputValue, setTagsInputValue] = useState([]);
+  const noteInputRef = useRef(null);
 
   const addNote = (text, tags) => {
     setNotes([{ id: uuidv4(), timestamp: moment(), text, tags }, ...notes]);
@@ -90,6 +91,7 @@ export default function App() {
     addNote(noteInputValue, tagsInputValue);
     setNoteInputValue("");
     setTagsInputValue([]);
+    noteInputRef.current.focus();
   };
 
   const handleChangeNote = (e) => {
@@ -114,7 +116,11 @@ export default function App() {
         SimpleNote
       </Typography>
       <form className={classes.form} onSubmit={handleSaveNote}>
-        <NoteInput value={noteInputValue} onChange={handleChangeNote} />
+        <NoteInput
+          ref={noteInputRef}
+          value={noteInputValue}
+          onChange={handleChangeNote}
+        />
         <TagsInput
           value={tagsInputValue}
           onChange={handleChangeTags}

@@ -8,11 +8,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NoteInput(props) {
+const NoteInput = React.forwardRef((props, ref) => {
   const classes = useStyles();
 
   return (
     <TextField
+      inputRef={ref}
       className={classes.input}
       value={props.value}
       onChange={props.onChange}
@@ -20,4 +21,6 @@ export default function NoteInput(props) {
       placeholder="Write your note..."
     />
   );
-}
+});
+
+export default NoteInput;

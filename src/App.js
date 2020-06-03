@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Chip from "@material-ui/core/Chip";
+import NoteInput from "./NoteInput";
+import TagsInput from "./TagsInput";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,9 +22,6 @@ const useStyles = makeStyles((theme) => ({
   form: {
     margin: theme.spacing(5, 0, 3, 0),
   },
-  input: {
-    marginBottom: theme.spacing(2),
-  },
   tag: {
     margin: theme.spacing(0, 0, 0, 0.5),
   },
@@ -31,23 +29,22 @@ const useStyles = makeStyles((theme) => ({
 
 export default function App() {
   const classes = useStyles();
-
-  const dummyData = [
+  const dummyNotes = [
     {
       id: uuidv4(),
-      timestamp: moment().add(25, "minutes"),
+      timestamp: moment().subtract(25, "minutes"),
       text: "Get groceries",
       tags: ["todo"],
     },
     {
       id: uuidv4(),
-      timestamp: moment().add(10, "minutes"),
+      timestamp: moment().subtract(10, "minutes"),
       text: "Go to the gym later",
       tags: ["todo", "fitness", "2020 goals"],
     },
     {
       id: uuidv4(),
-      timestamp: moment().add(4, "minutes"),
+      timestamp: moment().subtract(4, "minutes"),
       text: "Mitch is the trainer from Colorado",
       tags: ["people"],
     },
@@ -58,9 +55,20 @@ export default function App() {
       tags: ["work", "reminder"],
     },
   ];
-  const [notes, setNotes] = useState(dummyData);
+  const dummyTags = [
+    "todo",
+    "fitness",
+    "2020 goals",
+    "people",
+    "work",
+    "reminder",
+  ];
+  const [notes, setNotes] = useState(dummyNotes);
+  const [tags, setTags] = useState(dummyTags);
   // const [notes, setNotes] = useState([]);
-  const [input, setInput] = useState("");
+  // const [tags, setTags] = useState([]);
+  const [noteInputValue, setNoteInputValue] = useState("");
+  const [tagsInputValue, setTagsInputValue] = useState([]);
 
   const addNote = (text, tags) => {
     setNotes([{ id: uuidv4(), timestamp: moment(), text, tags }, ...notes]);
@@ -75,13 +83,17 @@ export default function App() {
 
   const handleSaveNote = (e) => {
     e.preventDefault();
-    setInput("");
-    // TODO: account for tags
-    addNote(input, []);
+    setNoteInputValue("");
+    setTagsInputValue([]);
+    addNote(noteInputValue, tagsInputValue);
   };
 
   const handleChangeNote = (e) => {
-    setInput(e.target.value);
+    setNoteInputValue(e.target.value);
+  };
+
+  const handleChangeTags = (e, newValue) => {
+    setTagsInputValue(newValue);
   };
 
   return (
@@ -95,18 +107,17 @@ export default function App() {
         SimpleNote
       </Typography>
       <form className={classes.form} onSubmit={handleSaveNote}>
-        <TextField
-          className={classes.input}
-          value={input}
-          onChange={handleChangeNote}
-          fullWidth
-          placeholder="Write something here..."
+        <NoteInput value={noteInputValue} onChange={handleChangeNote} />
+        <TagsInput
+          value={tagsInputValue}
+          onChange={handleChangeTags}
+          options={tags}
         />
         <Button
           type="submit"
           variant="contained"
           color="primary"
-          disabled={!input}
+          disabled={!noteInputValue}
         >
           Save
         </Button>

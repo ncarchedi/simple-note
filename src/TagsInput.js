@@ -26,12 +26,14 @@ export default function TagsInput(props) {
       onChange={props.onChange}
       inputValue={inputValue}
       onInputChange={(e, newInputValue) => {
-        setInputValue(newInputValue);
+        setInputValue(newInputValue.toLowerCase());
       }}
       multiple
       autoHighlight
       filterSelectedOptions
       freeSolo
+      clearOnBlur
+      openOnFocus
       filterOptions={(options, params) => {
         const filtered = filter(options, params);
         // Suggest the creation of a new value per...
@@ -44,7 +46,11 @@ export default function TagsInput(props) {
         }
         return filtered;
       }}
-      options={props.options}
+      options={props.options.sort((a, b) => {
+        if (a.label < b.label) return -1;
+        if (a.label > b.label) return 1;
+        return 0;
+      })}
       getOptionLabel={(option) => option.label}
       renderOption={(option, { inputValue }) => {
         const matches = match(option.label, inputValue);

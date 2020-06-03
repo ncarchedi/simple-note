@@ -29,12 +29,6 @@ export default function TagsInput(props) {
       filterSelectedOptions
       freeSolo
       options={props.options.sort()}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder={props.value.length ? null : "Add some tags..."}
-        />
-      )}
       renderOption={(option, { inputValue }) => {
         const matches = match(option, inputValue);
         const parts = parse(option, matches);
@@ -53,6 +47,12 @@ export default function TagsInput(props) {
         );
       }}
       ChipProps={{ variant: "outlined", color: "primary", size: "small" }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          placeholder={props.value.length ? null : "Add some tags..."}
+        />
+      )}
     />
   );
 }

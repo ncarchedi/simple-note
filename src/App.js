@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
@@ -14,7 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: theme.spacing(3),
+    margin: theme.spacing(2, "auto"),
   },
   logo: {
     fontFamily: ["Pacifico", "cursive"],
@@ -23,7 +24,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(5, 0, 3, 0),
   },
   tag: {
-    margin: theme.spacing(0, 0, 0, 0.5),
+    margin: theme.spacing(0.25),
+  },
+  tagsContainer: {
+    [theme.breakpoints.up("sm")]: {
+      textAlign: "right",
+    },
   },
 }));
 
@@ -50,6 +56,13 @@ export default function App() {
     },
     {
       id: uuidv4(),
+      timestamp: moment().subtract(3, "minutes"),
+      text:
+        "Ideas for next project: an edible rocket, a website that doesn't load, a note-taking app for babies",
+      tags: ["2020 goals", "note to self", "reminder", "work", "ideas"],
+    },
+    {
+      id: uuidv4(),
       timestamp: moment(),
       text: "Quarterly reviews are next week",
       tags: ["work", "reminder"],
@@ -62,6 +75,8 @@ export default function App() {
     "people",
     "work",
     "reminder",
+    "note to self",
+    "ideas",
   ];
   const [notes, setNotes] = useState(dummyNotes);
   const [tags, setTags] = useState(dummyTags);
@@ -140,21 +155,27 @@ export default function App() {
           .sort((a, b) => b.timestamp - a.timestamp)
           .map((n) => (
             <ListItem key={n.id} disableGutters divider>
-              <ListItemText
-                primary={n.text}
-                secondary={n.timestamp.format("LLL")}
-              />
-              {n.tags.map((t) => (
-                <Chip
-                  className={classes.tag}
-                  key={t}
-                  label={t}
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  onDelete={() => handleRemoveTag(n.id, t)}
-                />
-              ))}
+              <Grid container alignItems="center">
+                <Grid item xs={12} sm={6}>
+                  <ListItemText
+                    primary={n.text}
+                    secondary={n.timestamp.format("LLL")}
+                  />
+                </Grid>
+                <Grid className={classes.tagsContainer} item xs={12} sm={6}>
+                  {n.tags.map((t) => (
+                    <Chip
+                      className={classes.tag}
+                      key={t}
+                      label={t}
+                      variant="outlined"
+                      color="primary"
+                      size="small"
+                      onDelete={() => handleRemoveTag(n.id, t)}
+                    />
+                  ))}
+                </Grid>
+              </Grid>
             </ListItem>
           ))}
       </List>

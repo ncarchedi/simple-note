@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
@@ -39,55 +39,31 @@ export default function App() {
   const [notes, setNotes] = useState(storedNotes);
   const [tags, setTags] = useState(storedTags);
 
-  const [noteInputValue, setNoteInputValue] = useState("");
-  const [tagsInputValue, setTagsInputValue] = useState([]);
-  const noteInputRef = useRef(null);
-
-  // update local storage when notes or tags change
+  // update local storage whenever notes or tags change
   useEffect(() => {
     window.localStorage.setItem("notes", JSON.stringify(notes));
     window.localStorage.setItem("tags", JSON.stringify(tags));
   }, [notes, tags]);
 
+  // add a new note to the list of all notes
   const addNote = (text, tagIds) => {
-    setNotes([{ id: uuidv4(), timestamp: moment(), text, tagIds }, ...notes]);
+    const newNote = { id: uuidv4(), timestamp: moment(), text, tagIds };
+    setNotes([newNote, ...notes]);
   };
 
-  const createTag = (label) => {
+  // add tag to the list of tag options
+  const addTag = (label) => {
     const newTag = { id: uuidv4(), label };
     setTags([newTag, ...tags]);
     return newTag;
   };
 
+  // remove tag from an existing note
   const handleRemoveTag = (noteId, tagId) => {
     const otherNotes = notes.filter((n) => n.id !== noteId);
     const selectedNote = notes.filter((n) => n.id === noteId)[0];
     const newTagIds = selectedNote.tagIds.filter((id) => id !== tagId);
     setNotes([...otherNotes, { ...selectedNote, tagIds: newTagIds }]);
-  };
-
-  const handleSaveNote = (e) => {
-    e.preventDefault();
-    const tagIds = tagsInputValue.map((t) => t.id);
-    addNote(noteInputValue, tagIds);
-    setNoteInputValue("");
-    setTagsInputValue([]);
-    noteInputRef.current.focus();
-  };
-
-  const handleChangeNote = (e) => {
-    setNoteInputValue(e.target.value);
-  };
-
-  const handleChangeTags = (e, allTags) => {
-    const otherTags = allTags.slice(0, -1);
-    let newTag = allTags.slice(-1)[0];
-    // add new tag if it doesn't already exist
-    if (newTag && newTag.inputValue) {
-      newTag = createTag(newTag.inputValue);
-      allTags = [...otherTags, newTag];
-    }
-    setTagsInputValue(allTags);
   };
 
   return (
@@ -100,15 +76,7 @@ export default function App() {
       >
         SimpleNote
       </Typography>
-      <NoteForm
-        tags={tags}
-        noteInputValue={noteInputValue}
-        tagsInputValue={tagsInputValue}
-        onChangeNote={handleChangeNote}
-        onSaveNote={handleSaveNote}
-        onChangeTags={handleChangeTags}
-        noteInputRef={noteInputRef}
-      />
+      <NoteForm tags={tags} addNote={addNote} addTag={addTag} />
       <NoteList notes={notes} tags={tags} onRemoveTag={handleRemoveTag} />
     </Container>
   );

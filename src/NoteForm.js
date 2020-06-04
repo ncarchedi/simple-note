@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import NoteInput from "./NoteInput";
@@ -12,27 +12,45 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NoteForm(props) {
   const classes = useStyles();
+  const [noteInputValue, setNoteInputValue] = useState("");
+  const [tagsInputValue, setTagsInputValue] = useState([]);
+  const noteInputRef = useRef(null);
+  const { tags, addNote, addTag } = props;
 
-  const {
-    tags,
-    noteInputValue,
-    tagsInputValue,
-    onChangeNote,
-    onSaveNote,
-    onChangeTags,
-    noteInputRef,
-  } = props;
+  const handleChangeNote = (e) => {
+    setNoteInputValue(e.target.value);
+  };
+
+  const handleChangeTags = (e, allTags) => {
+    const otherTags = allTags.slice(0, -1);
+    let newTag = allTags.slice(-1)[0];
+    // add new tag if it doesn't already exist
+    if (newTag && newTag.inputValue) {
+      newTag = addTag(newTag.inputValue);
+      allTags = [...otherTags, newTag];
+    }
+    setTagsInputValue(allTags);
+  };
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    const tagIds = tagsInputValue.map((t) => t.id);
+    addNote(noteInputValue, tagIds);
+    setNoteInputValue("");
+    setTagsInputValue([]);
+    noteInputRef.current.focus();
+  };
 
   return (
-    <form className={classes.form} onSubmit={onSaveNote}>
+    <form className={classes.form} onSubmit={handleSave}>
       <NoteInput
         ref={noteInputRef}
         value={noteInputValue}
-        onChange={onChangeNote}
+        onChange={handleChangeNote}
       />
       <TagsInput
         value={tagsInputValue}
-        onChange={onChangeTags}
+        onChange={handleChangeTags}
         options={tags}
       />
       <Button

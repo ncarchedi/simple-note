@@ -10,13 +10,14 @@ const useStyles = makeStyles((theme) => ({
 
 const NoteInput = React.forwardRef((props, ref) => {
   const classes = useStyles();
+  const { value, onChange } = props;
 
   return (
     <TextField
       inputRef={ref}
       className={classes.input}
-      value={props.value}
-      onChange={props.onChange}
+      value={value}
+      onChange={onChange}
       fullWidth
       autoFocus
       placeholder="Write your note..."

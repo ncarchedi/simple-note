@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import NoteInput from "./NoteInput";
 import TagsInput from "./TagsInput";
 
@@ -58,8 +59,9 @@ export default function NoteForm(props) {
         variant="contained"
         color="primary"
         disabled={!noteInputValue}
+        endIcon={<ArrowForwardIcon />}
       >
-        Save
+        Save note
       </Button>
     </form>
   );

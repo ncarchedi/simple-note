@@ -4,6 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
 import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ListedNote from "./ListedNote";
 
@@ -15,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "flex-end",
     marginBottom: theme.spacing(1),
+    "& button": {
+      margin: theme.spacing(0, 0.5),
+    },
   },
 }));
 
@@ -34,22 +38,44 @@ export default function NotesList(props) {
     setSelectedNoteIds([]);
   };
 
+  const handleEditNote = () => {
+    alert("Sorry, you can't do that yet!");
+  };
+
   const renderNotesList = () => {
-    const numNotes = selectedNoteIds.length;
+    const numberSelected = selectedNoteIds.length;
 
     return (
       <>
         <Box className={classes.buttonContainer}>
-          <Button
-            onClick={handleDeleteNotes}
-            variant="contained"
-            disabled={!numNotes}
-            endIcon={<DeleteIcon />}
-          >
-            {numNotes === 1
-              ? `Delete ${numNotes} note`
-              : `Delete ${numNotes} notes`}
-          </Button>
+          <Tooltip title={"Select one or more notes to delete them."}>
+            <span>
+              <Button
+                onClick={handleDeleteNotes}
+                variant="outlined"
+                disabled={!numberSelected}
+                endIcon={<DeleteIcon />}
+                color="default"
+              >
+                {numberSelected === 1
+                  ? `Delete ${numberSelected} note`
+                  : `Delete ${numberSelected} notes`}
+              </Button>
+            </span>
+          </Tooltip>
+          <Tooltip title={"Select exactly one note to delete it."}>
+            <span>
+              <Button
+                onClick={handleEditNote}
+                variant="contained"
+                disabled={numberSelected !== 1}
+                endIcon={<DeleteIcon />}
+                color="primary"
+              >
+                Edit note
+              </Button>
+            </span>
+          </Tooltip>
         </Box>
         <List>
           {notes
@@ -78,7 +104,7 @@ export default function NotesList(props) {
         align="center"
         color="textSecondary"
       >
-        You don't have any notes
+        Add some notes!
       </Typography>
     );
   };

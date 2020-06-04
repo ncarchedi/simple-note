@@ -18,12 +18,13 @@ const filter = createFilterOptions();
 export default function TagsInput(props) {
   const classes = useStyles();
   const [inputValue, setInputValue] = React.useState(""); // what's currently typed
+  const { value, onChange, options } = props;
 
   return (
     <Autocomplete
       className={classes.input}
-      value={props.value}
-      onChange={props.onChange}
+      value={value}
+      onChange={onChange}
       inputValue={inputValue}
       onInputChange={(e, newInputValue) => {
         setInputValue(newInputValue.toLowerCase());
@@ -38,7 +39,7 @@ export default function TagsInput(props) {
         const filtered = filter(options, params);
         // Suggest the creation of a new value per...
         // https://material-ui.com/components/autocomplete/#creatable
-        if (!filtered.length) {
+        if (params.inputValue && !filtered.length) {
           filtered.push({
             inputValue: params.inputValue,
             label: `Add "${params.inputValue}"`,
@@ -46,7 +47,7 @@ export default function TagsInput(props) {
         }
         return filtered;
       }}
-      options={props.options.sort((a, b) => {
+      options={options.sort((a, b) => {
         if (a.label < b.label) return -1;
         if (a.label > b.label) return 1;
         return 0;
@@ -72,7 +73,7 @@ export default function TagsInput(props) {
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder={props.value.length ? null : "Add some tags..."}
+          placeholder={value.length ? null : "Add some tags..."}
         />
       )}
     />

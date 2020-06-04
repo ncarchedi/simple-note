@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 import NoteForm from "./NoteForm";
-import NoteList from "./NoteList";
+import NotesList from "./NotesList";
 // import { dummyNotes, dummyTags } from "./dummyData";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,9 +51,9 @@ export default function App() {
     setNotes([newNote, ...notes]);
   };
 
-  // delete a note from the list of all notes
-  const handleDeleteNote = (id) => {
-    setNotes(notes.filter((n) => n.id !== id));
+  // delete notes from the list of all notes
+  const deleteNotes = (ids) => {
+    setNotes(notes.filter((n) => !ids.includes(n.id)));
   };
 
   // add tag to the list of tag options
@@ -82,10 +82,10 @@ export default function App() {
         SimpleNote
       </Typography>
       <NoteForm tags={tags} addNote={addNote} addTag={addTag} />
-      <NoteList
+      <NotesList
         notes={notes}
         tags={tags}
-        onDeleteNote={handleDeleteNote}
+        deleteNotes={deleteNotes}
         onRemoveTag={handleRemoveTag}
       />
     </Container>

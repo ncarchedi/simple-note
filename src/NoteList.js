@@ -3,7 +3,7 @@ import List from "@material-ui/core/List";
 import ListedNote from "./ListedNote";
 
 export default function NoteList(props) {
-  const { notes, tags, onRemoveTag } = props;
+  const { notes, tags, onDeleteNote, onRemoveTag } = props;
 
   return (
     <List>
@@ -14,6 +14,7 @@ export default function NoteList(props) {
             key={note.id}
             note={note}
             tags={tags}
+            onDeleteNote={onDeleteNote}
             onRemoveTag={onRemoveTag}
           />
         ))}

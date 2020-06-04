@@ -51,6 +51,11 @@ export default function App() {
     setNotes([newNote, ...notes]);
   };
 
+  // delete a note from the list of all notes
+  const handleDeleteNote = (id) => {
+    setNotes(notes.filter((n) => n.id !== id));
+  };
+
   // add tag to the list of tag options
   const addTag = (label) => {
     const newTag = { id: uuidv4(), label };
@@ -77,7 +82,12 @@ export default function App() {
         SimpleNote
       </Typography>
       <NoteForm tags={tags} addNote={addNote} addTag={addTag} />
-      <NoteList notes={notes} tags={tags} onRemoveTag={handleRemoveTag} />
+      <NoteList
+        notes={notes}
+        tags={tags}
+        onDeleteNote={handleDeleteNote}
+        onRemoveTag={handleRemoveTag}
+      />
     </Container>
   );
 }

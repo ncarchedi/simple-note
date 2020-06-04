@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ListedNote(props) {
   const classes = useStyles();
-  const { note, tags, onRemoveTag } = props;
+  const { note, tags, onDeleteNote, onRemoveTag } = props;
   const [isHovered, setIsHovered] = useState(false);
 
   const renderOverlay = () => {
@@ -60,7 +60,7 @@ export default function ListedNote(props) {
         <IconButton
           classes={classes.hoverButton}
           aria-label="delete"
-          onClick={() => console.log("delete note: " + note.text)}
+          onClick={() => onDeleteNote(note.id)}
         >
           <DeleteIcon />
         </IconButton>
